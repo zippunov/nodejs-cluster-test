@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,300&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: row;
+            margin: 0;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            flex: 5;
+            padding: 20px 200px;
+        }
+
+        .start-btn {
+            margin: auto;
+        }
+
+        .buttons-bar {
+            flex-grow: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            align-content: center;
+        }
+
+        button {
+            width: 150px;
+            height: 2em;
+            font-family: inherit;
+        }
+
+        #log {
+            display: block;
+            height: 400px;
+            border: 1px solid lightblue;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+
+        #log > * {
+            font-size: 0.7em;
+        }
+
+        .date-span {
+            color: green;
+            padding-right: 20px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+    <script>
+        let state;
+        let timeoutHandler;
+
+        const url = 'http://localhost:<%= port %>/data';
+
+        function generatePayload() {
+            const length = Math.floor(Math.random() * 100000) + 100;
+            let payload = '';
+            while(payload.length < length) {
+                const array = new Uint32Array(500);
+                self.crypto.getRandomValues(array);
+                payload += array.join('');
+            }
+            return payload;
+        }
+
+        function getLengthStr(payload) {
+            return Math.round(payload.length / 1024) + 'Kb';
+        }
+
+        function sendPayload(payload) {
+            const headers = new Headers();
+            headers.append('Accept', 'text/plain');
+            headers.append('Content-Type', 'text/plain');
+            return fetch(url, {
+                method: 'PUT',
+                body: payload,
+                headers: headers,
+            })
+        }
+
+        function workerFn() {
+            const payload = generatePayload();
+            const timestamp = new Date();
+            sendPayload(payload)
+                .then(() => {
+                    addLog(timestamp, getLengthStr(payload), null);
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+                .finally(() => {
+                    const nextTimeout = Math.floor(Math.random() * 9000) + 1000;
+                    timeoutHandler = setTimeout(workerFn, nextTimeout);
+                })
+
+        }
+
+        function start() {
+            if (state === 'RUNNING') return;
+            state = 'RUNNING';
+            document.getElementById("btnStart").disabled = true;
+            document.getElementById("btnPause").disabled = false;
+            document.getElementById("btnReset").disabled = false;
+            workerFn();
+        }
+
+        function pause() {
+            if (state === 'PAUSE') return;
+            state = 'PAUSE';
+            document.getElementById("btnStart").disabled = false;
+            document.getElementById("btnPause").disabled = true;
+            document.getElementById("btnReset").disabled = false;
+            clearTimeout(timeoutHandler);
+        }
+
+        function reset() {
+            if (state === 'READY') return;
+            state = 'READY';
+            document.getElementById("btnStart").disabled = false;
+            document.getElementById("btnPause").disabled = true;
+            document.getElementById("btnReset").disabled = true;
+            clearTimeout(timeoutHandler);
+            document.getElementById("records").innerHTML = '';
+            setTimeout(() => {
+                const node = document.getElementById('log');
+                node.scrollTop = node.scrollHeight;
+            });
+        }
+
+        function addLog(timestamp, lengthStr, err) {
+            const row = document.createElement('div');
+            const span1 = document.createElement('span');
+            span1.className = 'date-span';
+            const dateText = document.createTextNode(timestamp.toISOString());
+            span1.appendChild(dateText);
+            const span2 = document.createElement('span');
+            let sizeText;
+            if (err) {
+                sizeText = document.createTextNode(lengthStr + ' ' + err.message);
+                span2.className = 'error';
+            } else {
+                sizeText = document.createTextNode(lengthStr);
+            }
+            span2.appendChild(sizeText);
+            row.appendChild(span1);
+            row.appendChild(span2);
+            document.getElementById("records").appendChild(row);
+            setTimeout(() => {
+                const node = document.getElementById('log');
+                node.scrollTop = node.scrollHeight;
+            });
+        }
+    </script>
+</head>
+<body onload="reset();">
+<div class="main">
+    <div class="buttons-bar">
+        <button id="btnStart" class="start-btn" onclick="start();">Start</button>
+    </div>
+    <div id="log">
+        <div id="records"></div>
+    </div>
+    <div class="buttons-bar">
+        <button id="btnPause" onclick="pause();">Pause</button>
+        <button id="btnReset" onclick="reset();">Stop</button>
+    </div>
+</div>
+
+
+</body>
+</html>

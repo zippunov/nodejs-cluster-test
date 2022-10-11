@@ -1,0 +1,30 @@
+{
+  "name": "pixaera-assignment",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "Viacheslav Zipunov",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/view": "^7.1.0",
+    "better-queue": "^3.8.12",
+    "ejs": "^3.1.8",
+    "fastify": "^4.7.0",
+    "open": "^8.4.0",
+    "pg": "^8.8.0",
+    "pino": "^8.6.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "@types/better-queue": "^3.8.3",
+    "@types/ejs": "^3.1.1",
+    "@types/pg": "^8.6.5",
+    "@types/pino": "^7.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  }
+}
