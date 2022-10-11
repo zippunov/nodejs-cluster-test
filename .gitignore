@@ -3,4 +3,5 @@ node_modules
 *.code-workspace
 local-run.sh
 build
+.DS_Store
 
