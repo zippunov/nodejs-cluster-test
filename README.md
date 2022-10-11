@@ -2,7 +2,7 @@
 
 ## Architecture
 
-    ![Architecture diagram](/doc/diagram.png?raw=true)
+    ![Architecture diagram](/doc/diagram.png)
 
 ## This is still WIP.
 
