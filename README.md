@@ -23,7 +23,26 @@ This leads to the following consideration:
 
 ![Architecture diagram](/doc/diagram.png)
 
+## Web UI
 
+Writing frontends with bare JS and HTML was never my strong point.
+
+I am quite comfortable with React or Svelte. But using those will significantly complicate project structure. So I decided against it.
+
+I did try my best to make a basic frontend using an EJS template engine. The only purpose of using templates is to transfer application settings (namely service PORT number).
+
+## Configuration
+
+The application expects a number of environment variables to be set in order to run:
+
+```text
+PORT    - Service port (default 9932)
+PG_USER - Postgres username (default 'postgres')
+PG_PASS - Postgres password (default 'postgres')
+PG_HOST - Postgres host (default 'localhost')
+PG_PORT - Postgres port (default 5432)
+PG_DB   - Postrgres database (default 'test')
+```
 
 ## This is still WIP.
 
