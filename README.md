@@ -3,7 +3,6 @@
 ## This is still WIP.
 
 - proper README documentation
-- jsDocs and code comments
 - load test
 
 Will be added later today. I take seriously those things, just have to manage my time bewteen work and family.
