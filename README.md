@@ -25,6 +25,8 @@ This leads to the following consideration:
 
 ## Web UI
 
+Available at relative URL `/ui`
+
 Writing frontends with bare JS and HTML was never my strong point.
 
 I am quite comfortable with React or Svelte. But using those will significantly complicate project structure. So I decided against it.
