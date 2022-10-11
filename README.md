@@ -1,5 +1,9 @@
 # Pixaera assignment
 
+## Architecture
+
+    ![Architecture diagram](/doc/diagram.png?raw=true)
+
 ## This is still WIP.
 
 - proper README documentation
