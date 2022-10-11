@@ -23,10 +23,10 @@ export default class ClusterManager {
 
     /**
      *
-     * @param workersCount - number of workers to create
-     * @param workerStartFn - anonymous async function - initialization of each worker
-     * @param workerStopFn - anonymous async function - graceful worker shutdown
-     * @param log - instance of the pino.BaseLogger interface
+     * @param {number} workersCount - number of workers to create
+     * @param {AsyncVoidFn} workerStartFn - anonymous async function bootstraps each worker
+     * @param {AsyncVoidFn} workerStopFn - anonymous async function - graceful worker shutdown
+     * @param {pino.BaseLogger} log - logger instance
      */
     constructor(workersCount: number, workerStartFn: AsyncVoidFn, workerStopFn:AsyncVoidFn, log: pino.BaseLogger) {
         this.workersCount = workersCount;
@@ -48,6 +48,9 @@ export default class ClusterManager {
         process.on("SIGINT", this.gracefulClusterShutdown("SIGINT"));
     }
 
+    /**
+     * bootWorkers: Main cluster process starts all dependent workers
+     */
     private bootWorkers = async () => {
         this.log.info(`Setting ${this.workersCount} workers...`);
 
@@ -74,6 +77,10 @@ export default class ClusterManager {
         });
     };
 
+    /**
+     * @function gracefulClusterShutdown handles cluster shutdown
+     * @param {NodeJS.Signals} signal
+     */
     private gracefulClusterShutdown = (signal: NodeJS.Signals) => async () => {
         if (this.shutdownInProgress) return;
 

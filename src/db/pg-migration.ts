@@ -7,6 +7,10 @@ CREATE TABLE IF NOT EXISTS post_data (
   "data" TEXT
 )`;
 
+/**
+ * Run PG migration in order to create required table.
+ * @param {ClientConfig} config - PG client configuration
+ */
 export default async function migratePostgres(config: ClientConfig) {
     const client = new Client(config);
     await client.connect();
