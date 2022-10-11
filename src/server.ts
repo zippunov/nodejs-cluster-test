@@ -1,9 +1,6 @@
 import * as ff from 'fastify';
 import fastifyView from "@fastify/view";
 import ejs from  'ejs';
-
-
-
 import QueueManager from './queue'
 
 export function serverFactory(server: ff.FastifyInstance, queue: QueueManager, port: number) {
