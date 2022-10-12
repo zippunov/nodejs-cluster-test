@@ -20,7 +20,7 @@ async function bench() {
         const result = await autocannon({
             title: 'Pixaera assignment autocannon test',
             url: `http://localhost:${port}`,
-            // amount: 20,
+            amount: 5000,
             requests: [
                 {
                     method: 'PUT',
