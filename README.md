@@ -60,15 +60,6 @@ CREATE TABLE IF NOT EXISTS post_data (
 
 Again, there are a plethora of rich migration engines in the NodeJs universe. In the real-world scenario, I will use one of them. I have decided to go with the simplest working solution in order to avoid unnecessary project complications.
 
-## This is still WIP.
-
-What is missing:
-
-- load test
-- component test
-
-Those be added later today.
-
 ## How to run
 
 - Ensure that nodeJs version is >= 16
@@ -87,3 +78,85 @@ PG_PORT=5432 \
 PG_DB=surf \
 npm run dev;
 ```
+
+## Load Tests
+
+I have created simple load test with `autocannon` framework. It sends ~4K requests in 10 seconds to the running service.
+I have chosen random payload size to be 100Kb.
+
+### Test execution
+
+Run service:
+```bash
+PORT=8989 \
+PG_USER=gosurf \
+PG_PASS=gosurf \
+PG_HOST=localhost \
+PG_PORT=5432 \
+PG_DB=surf \
+npm run dev;
+```
+Run load test in the separate console window:
+```bash
+PORT=8989 npm run load-test
+```
+In 10 seconds resulting report is getting generated:
+```bash
+
+┌─────────┬───────┬───────┬───────┬───────┬──────────┬────────┬───────┐
+│ Stat    │ 2.5%  │ 50%   │ 97.5% │ 99%   │ Avg      │ Stdev  │ Max   │
+├─────────┼───────┼───────┼───────┼───────┼──────────┼────────┼───────┤
+│ Latency │ 16 ms │ 18 ms │ 40 ms │ 50 ms │ 20.75 ms │ 7.2 ms │ 96 ms │
+└─────────┴───────┴───────┴───────┴───────┴──────────┴────────┴───────┘
+┌───────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+│ Stat      │ 1%      │ 2.5%    │ 50%     │ 97.5%   │ Avg     │ Stdev   │ Min     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Req/Sec   │ 417     │ 417     │ 427     │ 456     │ 432     │ 12.82   │ 417     │
+├───────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ Bytes/Sec │ 69.2 kB │ 69.2 kB │ 70.9 kB │ 75.7 kB │ 71.7 kB │ 2.13 kB │ 69.2 kB │
+└───────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+┌──────┬───────┐
+│ Code │ Count │
+├──────┼───────┤
+│ 200  │ 4320  │
+└──────┴───────┘
+
+┌────────────┬──────────────┐
+│ Percentile │ Latency (ms) │
+├────────────┼──────────────┤
+│ 0.001      │ 15           │
+├────────────┼──────────────┤
+│ 0.01       │ 15           │
+├────────────┼──────────────┤
+│ 0.1        │ 15           │
+├────────────┼──────────────┤
+│ 1          │ 16           │
+├────────────┼──────────────┤
+│ 2.5        │ 16           │
+├────────────┼──────────────┤
+│ 10         │ 16           │
+├────────────┼──────────────┤
+│ 25         │ 17           │
+├────────────┼──────────────┤
+│ 50         │ 18           │
+├────────────┼──────────────┤
+│ 75         │ 20           │
+├────────────┼──────────────┤
+│ 90         │ 34           │
+├────────────┼──────────────┤
+│ 97.5       │ 40           │
+├────────────┼──────────────┤
+│ 99         │ 50           │
+├────────────┼──────────────┤
+│ 99.9       │ 61           │
+├────────────┼──────────────┤
+│ 99.99      │ 96           │
+├────────────┼──────────────┤
+│ 99.999     │ 96           │
+└────────────┴──────────────┘
+
+4k requests in 10.18s, 717 kB read
+```
+So we can see that with 100Kb payload average latency is about 21 milliseconds.
+Totally we have sent 4320 requests in 10 seconds. All completed with status 200.
+Postgres DB shows that all data was successfully saved in the table. 
