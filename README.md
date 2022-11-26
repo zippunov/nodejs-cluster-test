@@ -1,8 +1,6 @@
-# Pixaera assignment
-
 ## Architecture
 
-The two most critical assignment requirements dictate the architectural solution.
+There where two most critical assignment requirements dictate the architectural solution.
 
 - Large payload size
 - Requirement to respond to the REST API call without waiting for data to be saved.
